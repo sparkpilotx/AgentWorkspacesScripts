@@ -1,0 +1,71 @@
+[project]
+name = "scripts"
+version = "0.0.0"
+requires-python = "==3.12.*"
+
+[dependency-groups]
+dev = [
+    "neo4j",
+    "psycopg[binary]",
+    "pyright",
+    "requests",
+    "ruff",
+]
+
+[tool.ruff]
+indent-width = 2
+line-length = 100
+src = ["."]
+target-version = "py312"
+
+[tool.ruff.format]
+indent-style = "space"
+line-ending = "lf"
+quote-style = "double"
+
+[tool.ruff.lint]
+# Keep the lint set broad enough to catch common AI-generated defects:
+# async misuse, bug-prone constructs, outdated syntax, avoidable complexity,
+# accidental debug prints, and noisy import diffs.
+select = [
+    "ASYNC",
+    "B",
+    "C4",
+    "E4",
+    "E7",
+    "E9",
+    "FA",
+    "F",
+    "I",
+    "RUF",
+    "SIM",
+    "T20",
+    "UP",
+]
+# Autofix only the rules that are low-risk for routine agent edits.
+fixable = ["I", "UP", "SIM", "C4", "FA"]
+
+[tool.ruff.lint.per-file-ignores]
+# These scripts are CLIs; print() is intentional agent-facing output.
+"db_health.py" = ["T201"]
+"reset_neo4j.py" = ["T201"]
+
+[tool.pyright]
+exclude = [
+    "**/__pycache__",
+    "**/.*",
+]
+include = ["."]
+pythonVersion = "3.12"
+typeCheckingMode = "strict"
+venv = ".venv"
+venvPath = "."
+# Keep our code strict while avoiding hard failures on third-party packages
+# that have incomplete or missing type stubs.
+reportMissingTypeStubs = "none"
+reportMissingParameterType = "error"
+# Unknown types often come from database/library boundaries; warn instead of
+# failing so strict mode remains useful without blocking on external shapes.
+reportUnknownArgumentType = "warning"
+reportUnknownMemberType = "warning"
+reportUnknownVariableType = "warning"
