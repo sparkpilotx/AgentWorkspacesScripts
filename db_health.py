@@ -3,16 +3,17 @@ import sys
 from collections.abc import Callable
 from urllib.parse import urljoin
 
-REQUIRED_ENV_VARS = (
-  "NEO4J_URI",
-  "NEO4J_USER",
-  "NEO4J_PASSWORD",
-  "PGHOST",
-  "PGPORT",
-  "PGUSER",
-  "PGPASSWORD",
-  "INFLUXDB3_HOST_URL",
-  "INFLUXDB3_AUTH_TOKEN",
+_NEO4J_ENV_VARS = ("NEO4J_URI", "NEO4J_USER", "NEO4J_PASSWORD")
+_PG_ENV_VARS = ("PGHOST", "PGPORT", "PGUSER", "PGPASSWORD")
+_INFLUXDB_ENV_VARS = ("INFLUXDB3_HOST_URL", "INFLUXDB3_AUTH_TOKEN")
+
+# Ubuntu 24.04 only has Neo4j; macOS has all three.
+_ON_LINUX = sys.platform == "linux"
+
+REQUIRED_ENV_VARS = _NEO4J_ENV_VARS if _ON_LINUX else (
+  *_NEO4J_ENV_VARS,
+  *_PG_ENV_VARS,
+  *_INFLUXDB_ENV_VARS,
 )
 
 
@@ -90,11 +91,16 @@ def run_check(name: str, check: Callable[[], tuple[str, str, str]]) -> tuple[str
 def main() -> int:
   validate_environment()
 
-  results = [
-    run_check("Neo4j", check_neo4j),
-    run_check("PostgreSQL", check_postgresql),
-    run_check("InfluxDB", check_influxdb),
+  checks: list[tuple[str, Callable[[], tuple[str, str, str]]]] = [
+    ("Neo4j", check_neo4j),
   ]
+  if not _ON_LINUX:
+    checks += [
+      ("PostgreSQL", check_postgresql),
+      ("InfluxDB", check_influxdb),
+    ]
+
+  results = [run_check(name, check) for name, check in checks]
 
   for name, status, detail in results:
     print(f"{name}: {status} - {detail}")

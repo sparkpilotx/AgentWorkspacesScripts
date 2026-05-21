@@ -15,3 +15,12 @@
 ## Python Policy
 - Target Python 3.12 only. Do not add compatibility code, syntax constraints, or test branches for other versions.
 - Use `uv` as the package manager.
+
+## Platform Differences
+
+### Database availability
+| Database   | Ubuntu 24.04 | macOS Tahoe 26 |
+|------------|:------------:|:--------------:|
+| Neo4j      | yes          | yes            |
+| PostgreSQL | no           | yes            |
+| InfluxDB   | no           | yes            |
