@@ -49,6 +49,7 @@ fixable = ["I", "UP", "SIM", "C4", "FA"]
 # These scripts are CLIs; print() is intentional agent-facing output.
 "db_health.py" = ["T201"]
 "reset_neo4j.py" = ["T201"]
+"test_genai.py" = ["T201"]
 
 [tool.pyright]
 exclude = [

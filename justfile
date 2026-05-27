@@ -10,6 +10,10 @@ db-health:
 reset-neo4j:
     uv run reset_neo4j.py
 
+# Test the Neo4j GenAI plugin (embedding, vector index, similarity search)
+test-genai:
+    uv run test_genai.py
+
 # Run format, lint, and typecheck in order
 check: format lint typecheck
 

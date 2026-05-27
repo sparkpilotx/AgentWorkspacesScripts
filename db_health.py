@@ -10,10 +10,14 @@ _INFLUXDB_ENV_VARS = ("INFLUXDB3_HOST_URL", "INFLUXDB3_AUTH_TOKEN")
 # Ubuntu 24.04 only has Neo4j; macOS has all three.
 _ON_LINUX = sys.platform == "linux"
 
-REQUIRED_ENV_VARS = _NEO4J_ENV_VARS if _ON_LINUX else (
-  *_NEO4J_ENV_VARS,
-  *_PG_ENV_VARS,
-  *_INFLUXDB_ENV_VARS,
+REQUIRED_ENV_VARS = (
+  _NEO4J_ENV_VARS
+  if _ON_LINUX
+  else (
+    *_NEO4J_ENV_VARS,
+    *_PG_ENV_VARS,
+    *_INFLUXDB_ENV_VARS,
+  )
 )
 
 
